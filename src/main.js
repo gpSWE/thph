@@ -352,7 +352,6 @@ async function run() {
 			if ( keyStates[ "Space" ] ) {
 
 				playerVelocity.y = 15
-
 			}
 		}
 	}
@@ -375,7 +374,6 @@ async function run() {
 				if ( child.material.map ) {
 
 					child.material.map.anisotropy = 4
-
 				}
 			}
 		} )
@@ -385,12 +383,7 @@ async function run() {
 		scene.add( helper )
 
 		const gui = new GUI( { width: 200 } )
-		gui.add( { debug: false }, "debug" )
-			.onChange( function ( value ) {
-				helper.visible = value
-			} )
-
-		animate()
+		gui.add( { debug: false }, "debug" ).onChange( () => { } )
 	} )
 
 	function teleportPlayerIfOob() {
@@ -423,6 +416,5 @@ async function run() {
 		renderer.render( scene, camera )
 
 		stats.update()
-		
 	} )
 }
