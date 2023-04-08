@@ -1,10 +1,10 @@
 import "./main.css"
 
 import * as THREE from "three"
-
 import { Octree } from "three/addons/math/Octree"
-import { OctreeHelper } from "three/addons/helpers/OctreeHelper"
 import { Capsule } from "three/addons/math/Capsule"
+
+import createWorld from "./world"
 
 window.addEventListener( "DOMContentLoaded", () => {
 
@@ -70,7 +70,6 @@ async function run() {
 
 		mouseTime = performance.now()
 	} )
-
 
 	document.body.addEventListener( "mousemove", ( event ) => {
 
@@ -187,37 +186,9 @@ async function run() {
 
 	// CUSTOM
 
-	const world = new THREE.Object3D()
-
-	scene.add( world )
-
-	{
-		const geometry = new THREE.PlaneGeometry( 100, 100, 100, 100 ).rotateX( - Math.PI / 2 )
-		const material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, } )
-		const mesh = new THREE.Mesh( geometry, material )
-		world.add( mesh )
-	}
-
-	{
-		const geometry = new THREE.BoxGeometry( 5, 2, 5 )
-		const material = new THREE.MeshNormalMaterial()
-		const mesh = new THREE.Mesh( geometry, material )
-		mesh.position.y = 4
-		world.add( mesh )
-	}
-
-	{
-		const geometry = new THREE.BoxGeometry( 2, 2, 2 )
-		const material = new THREE.MeshNormalMaterial()
-		const mesh = new THREE.Mesh( geometry, material )
-		mesh.position.set( 4, 1, 4 )
-		world.add( mesh )
-	}
+	const world = createWorld( { scene } )
 
 	worldOctree.fromGraphNode( world )
-
-	const helper = new OctreeHelper( worldOctree )
-	scene.add( helper )
 
 	function teleportPlayerIfOob() {
 
