@@ -245,7 +245,5 @@ async function run() {
 		}
 
 		renderer.render( scene, camera )
-
-		stats.update()
 	} )
 }
