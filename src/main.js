@@ -1,8 +1,8 @@
 import "./main.css"
 
 import * as THREE from "three"
-import { Octree } from "three/addons/math/Octree"
-import { Capsule } from "three/addons/math/Capsule"
+
+import { Capsule, Octree } from "./lib/Collision"
 
 import createWorld from "./world"
 
