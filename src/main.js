@@ -22,7 +22,7 @@ async function run() {
 
 	const scene = new THREE.Scene()
 
-	const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 )
+	const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 )
 	camera.rotation.order = "YXZ"
 
 	const renderer = new THREE.WebGLRenderer( { antialias: true } )
@@ -31,7 +31,7 @@ async function run() {
 
 	document.body.insertBefore( renderer.domElement, document.body.firstElementChild )
 
-	const GRAVITY = 25
+	const GRAVITY = 20
 
 	const NUM_SPHERES = 100
 	const SPHERE_RADIUS = 0.2
@@ -179,7 +179,7 @@ async function run() {
 
 			if ( keyStates[ "Space" ] ) {
 
-				playerVelocity.y = 15
+				playerVelocity.y = 50
 			}
 		}
 	}
