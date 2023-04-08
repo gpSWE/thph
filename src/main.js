@@ -2,11 +2,9 @@ import "./main.css"
 
 import * as THREE from "three"
 
-import Stats from "three/addons/libs/stats.module"
 import { Octree } from "three/addons/math/Octree"
 import { OctreeHelper } from "three/addons/helpers/OctreeHelper"
 import { Capsule } from "three/addons/math/Capsule"
-import { GUI } from "three/addons/libs/lil-gui.module.min"
 
 window.addEventListener( "DOMContentLoaded", () => {
 
@@ -32,11 +30,6 @@ async function run() {
 	renderer.setSize( window.innerWidth, window.innerHeight )
 
 	document.body.insertBefore( renderer.domElement, document.body.firstElementChild )
-
-	const stats = new Stats()
-	stats.domElement.style.position = "absolute"
-	stats.domElement.style.top = "0px"
-	document.body.appendChild( stats.domElement )
 
 	const GRAVITY = 25
 
