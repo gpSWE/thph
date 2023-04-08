@@ -405,7 +405,7 @@ async function run() {
 		}
 	}
 
-	function animate() {
+	renderer.setAnimationLoop( () => {
 
 		const deltaTime = Math.min( 0.05, clock.getDelta() ) / STEPS_PER_FRAME
 
@@ -418,13 +418,11 @@ async function run() {
 			updateSpheres( deltaTime )
 
 			teleportPlayerIfOob()
-
 		}
 
 		renderer.render( scene, camera )
 
 		stats.update()
-
-		requestAnimationFrame( animate )
-	}
+		
+	} )
 }
