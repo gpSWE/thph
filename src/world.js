@@ -1,7 +1,8 @@
 import * as THREE from "three"
+import * as turf from "@turf/turf"
 import { fromLonLat } from "./lib/fromLonLat"
 import { Earcut } from "./lib/Earcut"
-import d_landuse_low from "./data/d_landuse_low"
+import park_low from "./data/park_low"
 
 export default ( { scene } ) => {
 
@@ -9,31 +10,64 @@ export default ( { scene } ) => {
 
 	scene.add( world )
 
+	const center = [ 69.24840894433316,41.31650726459839 ] // PARK
+
+	// LAND
+
 	{
-		const vertices2D = []
+		// const vertices = []
+
+		// const land = turf.circle( center, 0.5 ).geometry.coordinates[ 0 ]
+
+		// for ( const [ lon, lat ] of land ) {
+
+		// 	const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
+
+		// 	vertices.push( x, y, z )
+		// }
+
+		// const indices = Earcut.triangulate( vertices, [], 3 )
+
+		// const geometry = new THREE.BufferGeometry().setAttribute( "position", new THREE.Float32BufferAttribute( vertices, 3 ) ).setIndex( indices )
+		// geometry.rotateX( - Math.PI / 2 )
+		// const material = new THREE.MeshBasicMaterial( { color: 0x157c05, wireframe: false } )
+		// const mesh = new THREE.Mesh( geometry, material )
+
+		// world.add( mesh )
+	}
+
+	// PARK
+
+	{
+
 		const vertices3D = []
 
-		for ( const [ lon, lat ] of d_landuse_low.geometry.coordinates[ 0 ] ) {
+		const countours = park_low.features[ 0 ].geometry.coordinates[ 0 ]
+		const holes = park_low.features[ 0 ].geometry.coordinates[ 1 ]
 
-			const [ x, z ] = fromLonLat( lon, lat )
+		for ( const [ lon, lat ] of countours ) {
 
-			vertices2D.unshift( [ x * 0.01, z * 0.01 ] )
-			vertices3D.push( x * 0.01, 0, z * 0.01 )
+			const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
+
+			vertices3D.push( x, y, z )
 		}
 
-		const indices = Earcut.triangulate( vertices2D.flat() )
+		for ( const [ lon, lat ] of holes ) {
 
-		const geometry = new THREE.BufferGeometry().setAttribute( "position", new THREE.Float32BufferAttribute( vertices3D, 3 ) )
-		geometry.setIndex( indices )
-		const material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true, } )
+			const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
+
+			vertices3D.push( x, y, z )
+		}
+
+		const indices = Earcut.triangulate( vertices3D, [], 3 )
+
+		const geometry = new THREE.BufferGeometry().setAttribute( "position", new THREE.Float32BufferAttribute( vertices3D, 3 ) ).setIndex( indices )
+		geometry.rotateX( - Math.PI / 2 )
+		const material = new THREE.MeshBasicMaterial( { color: 0x94e56b, wireframe: false, depthTest: false, } )
 		const mesh = new THREE.Mesh( geometry, material )
 
 		world.add( mesh )
 	}
-
-	const center = new THREE.Vector3()
-	new THREE.Box3().setFromObject( world ).getCenter( center )
-	world.position.sub( center )
 
 	return world
 }
