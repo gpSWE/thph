@@ -21,6 +21,7 @@ async function run() {
 	const clock = new THREE.Clock()
 
 	const scene = new THREE.Scene()
+	scene.background = new THREE.Color( 0xffffff )
 
 	const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 )
 	camera.rotation.order = "YXZ"
@@ -31,9 +32,8 @@ async function run() {
 
 	document.body.insertBefore( renderer.domElement, document.body.firstElementChild )
 
-	const GRAVITY = 20
+	const GRAVITY = 30
 
-	const NUM_SPHERES = 100
 	const SPHERE_RADIUS = 0.2
 
 	const STEPS_PER_FRAME = 5
@@ -179,7 +179,7 @@ async function run() {
 
 			if ( keyStates[ "Space" ] ) {
 
-				playerVelocity.y = 50
+				playerVelocity.y = 20
 			}
 		}
 	}
@@ -192,7 +192,7 @@ async function run() {
 
 	function teleportPlayerIfOob() {
 
-		if ( camera.position.y <= - 25 ) {
+		if ( camera.position.y <= - 20 ) {
 
 			playerCollider.start.set( 0, 0.35, 0 )
 			playerCollider.end.set( 0, 1, 0 )

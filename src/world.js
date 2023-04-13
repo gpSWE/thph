@@ -2,7 +2,8 @@ import * as THREE from "three"
 import * as turf from "@turf/turf"
 import { fromLonLat } from "./lib/fromLonLat"
 import { Earcut } from "./lib/Earcut"
-import park_low from "./data/park_low"
+import LAND from "./data/land"
+import VIRGINIA from "./data/virginia"
 
 export default ( { scene } ) => {
 
@@ -10,62 +11,53 @@ export default ( { scene } ) => {
 
 	scene.add( world )
 
-	const center = [ 69.24840894433316,41.31650726459839 ] // PARK
+	{
+		const light = new THREE.DirectionalLight( 0xffffff, 0.5 )
+		light.position.set( 0, 50, 0 )
+		scene.add( light )
+	}
+
+	{
+		const light = new THREE.HemisphereLight( 0x0000ff, 0xffffff, 0.5 )
+		light.position.set( 0, 50, 0 )
+		scene.add( light )
+	}
 
 	// LAND
 
 	{
-		// const vertices = []
-
-		// const land = turf.circle( center, 0.5 ).geometry.coordinates[ 0 ]
-
-		// for ( const [ lon, lat ] of land ) {
-
-		// 	const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
-
-		// 	vertices.push( x, y, z )
-		// }
-
-		// const indices = Earcut.triangulate( vertices, [], 3 )
-
-		// const geometry = new THREE.BufferGeometry().setAttribute( "position", new THREE.Float32BufferAttribute( vertices, 3 ) ).setIndex( indices )
-		// geometry.rotateX( - Math.PI / 2 )
-		// const material = new THREE.MeshBasicMaterial( { color: 0x157c05, wireframe: false } )
-		// const mesh = new THREE.Mesh( geometry, material )
-
-		// world.add( mesh )
+		const geometry = new THREE.BufferGeometry()
+		geometry.setIndex( LAND.index )
+		geometry.setAttribute( "position", new THREE.Float32BufferAttribute( LAND.position, 3 ) )
+		geometry.setAttribute( "uv", new THREE.Float32BufferAttribute( LAND.uv, 2 ) )
+		geometry.setAttribute( "normal", new THREE.Float32BufferAttribute( LAND.normal, 3 ) )
+		geometry.rotateX( - Math.PI / 2 )
+		const material = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
+		const mesh = new THREE.Mesh( geometry, material )
+		world.add( mesh )
 	}
 
-	// PARK
+	for ( const data of VIRGINIA ) {
 
-	{
+		let depthTest = false
 
-		const vertices3D = []
+		if (
+			data.properties.type === "house" ||
+			data.properties.type === "school"
+		) {
 
-		const countours = park_low.features[ 0 ].geometry.coordinates[ 0 ]
-		const holes = park_low.features[ 0 ].geometry.coordinates[ 1 ]
-
-		for ( const [ lon, lat ] of countours ) {
-
-			const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
-
-			vertices3D.push( x, y, z )
+			depthTest = true
 		}
 
-		for ( const [ lon, lat ] of holes ) {
+		const material = new THREE.MeshNormalMaterial( { depthTest: depthTest } )
 
-			const [ x, y, z ] = fromLonLat( lon, lat, center[ 0 ], center[ 1 ] )
-
-			vertices3D.push( x, y, z )
-		}
-
-		const indices = Earcut.triangulate( vertices3D, [], 3 )
-
-		const geometry = new THREE.BufferGeometry().setAttribute( "position", new THREE.Float32BufferAttribute( vertices3D, 3 ) ).setIndex( indices )
+		const geometry = new THREE.BufferGeometry()
+		geometry.setIndex( data.index )
+		geometry.setAttribute( "position", new THREE.Float32BufferAttribute( data.position, 3 ) )
+		geometry.setAttribute( "uv", new THREE.Float32BufferAttribute( data.uv, 2 ) )
+		geometry.setAttribute( "normal", new THREE.Float32BufferAttribute( data.normal, 3 ) )
 		geometry.rotateX( - Math.PI / 2 )
-		const material = new THREE.MeshBasicMaterial( { color: 0x94e56b, wireframe: false, depthTest: false, } )
 		const mesh = new THREE.Mesh( geometry, material )
-
 		world.add( mesh )
 	}
 
